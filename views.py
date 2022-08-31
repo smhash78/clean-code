@@ -60,9 +60,7 @@ def create_payment(request):
         payment = policy.payment_id
         if payment is None:
             raise TypeError("payment is None")
-    except Exception as e:
-        # everything is ok, new user
-        # create payment with coinpayment
+
     post_params = {
         'amount': policy.fee,
         'currency1': 'BTC',
@@ -72,13 +70,10 @@ def create_payment(request):
         'item_name': 'Policy for ' + policy.exchange.name,
         'item_number': policy.id
     }
-    try:
-        client = CryptoPayments(public_key, private_key)
-        transaction = client.createTransaction(post_params)
-        logger.debug(transaction)  # FOR DEBUG
-        if len(transaction) == 0:
-            raise Exception
-    except Exception as e:
+
+    client = CryptoPayments(public_key, private_key)
+    transaction = client.createTransaction(post_params)
+    if len(transaction) == 0:
         logger.error(e)
         message = 'Payment gateway is down'
         responseData = {'error': True, 'message': message}
@@ -272,6 +267,10 @@ else:
         
 @staff_member_required
 def backup_to_csv(request):
+    return func(request)
+
+
+def func(request):
     data = {}
     data['referral'] = ReferralPartner
     data['user'] = UserProfile

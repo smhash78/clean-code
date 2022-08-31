@@ -1,8 +1,5 @@
-from django.contrib.auth.models import AbstractUser
-from django.db import models
-
-
 class User(AbstractUser):
+    name = models.CharField(max_length=100)
     type = models.IntegerField()
 
 
@@ -21,19 +18,16 @@ class Payment(models.Model):
         if not self.is_paid:
             return None
 
-        if self.payment_agent:
-            return self.payment_agent
-
         if self.provider1.filter(type=1).count():
-            self.payment_agent = u"Provider1"
-        elif self.qprovider2.filter(type=1).count():
-            self.payment_agent = u"AO Provider2"
+            self.payment_agent = User("Provider1")
+        elif self.provider2.filter(type=1).count():
+            self.payment_agent = User("AO Provider2")
         elif self.provider3.filter(type=1).count():
-            self.payment_agent = u"Provider3"
+            self.payment_agent = User("Provider3")
         elif self.provider4.count():
-            self.payment_agent = u"Complex Provider 4 Name With Surname"
+            self.payment_agent = User("Complex Provider 4 Name With Surname")
         else:
-            self.payment_agent = u"Provider5 Full Company-Name"
+            self.payment_agent = User("Provider5 Full Company-Name")
 
         self.save()
         return self.payment_agent
