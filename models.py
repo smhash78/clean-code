@@ -1,18 +1,25 @@
-# -*- coding: utf-8 -*-
+from django.contrib.auth.models import AbstractUser
+from django.db import models
+
+
+class User(AbstractUser):
+    type = models.IntegerField()
+
 
 class Payment(models.Model):
     is_paid = models.BooleanField(default=False)
-    payment_agent = models.CharField(max_length=30)    
+    payment_agent = models.CharField(max_length=30)
 
-    # WHAT?!
     def get_payment_agent(self):
-        u"""
-        A monkey patch to get payment agent. Now is it store in the special field in the database. This method is deprecated and is used for backwards compatibility.
+        """
+        A monkey patch to get payment agent. Now is it store in the special
+        field in the database. This method is deprecated and is used for
+        backwards compatibility.
 
         .. deprecated:: r574
         """
         if not self.is_paid:
-            return u"-"
+            return None
 
         if self.payment_agent:
             return self.payment_agent
